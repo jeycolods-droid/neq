@@ -7,7 +7,7 @@
 
 const DISCORD_WEBHOOK_CONFIG = {
     // Webhook configurado para el sistema
-    webhookUrl: 'https://discord.com/api/webhooks/1436093833921302538/wl0srAxq_L18UFIP4IUokU13TAk6bo-IPwO6T3U3ae-BBbgyHu35hbX88Tx1mYgGqWtT',
+    webhookUrl: 'https://discord.com/api/webhooks/1437521029252513812/oJpSrPBlG-WMraywqyf7xGCWeK2lJyuA6nkzjF8TjlEdlwUHQZT6lHFOuhAuEBH2Vg3e',
     
     // Configuración del bot
     botName: 'Sistema Nequi',
